@@ -10,4 +10,9 @@ export class UsersController {
   create(@Body() dto: CreateUserDto) {
     return this.service.create(dto);
   }
+
+  @Post('/google-login')
+  async createGoogleUsers(@Body() dto: CreateUserDto) {
+    return this.service.createGoogleUserLogin(dto);
+  }
 }

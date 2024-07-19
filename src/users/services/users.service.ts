@@ -21,12 +21,14 @@ export class UsersService {
         googleId: dto.googleId,
       },
     });
-    if(!user){
-        const created = this.repo.create(dto);
-        const savedUser = await this.repo.save(created);
-        return savedUser;
+    let loggingUser = null;
+    if (!user) {
+      loggingUser = await this.create(dto);
+    } else {
+      loggingUser = user;
     }
-
+    loggingUser.loggedIn = true;
+    return this.repo.save(loggingUser);
   }
 
   list() {
