@@ -17,6 +17,6 @@ export class CreateUserDto {
   @IsNotEmpty()
   password: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   loggedIn: boolean;
 }
