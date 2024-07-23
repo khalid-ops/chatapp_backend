@@ -8,6 +8,8 @@ require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` });
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
     super({
+      usernameField: 'email',
+      passwordField: 'password',
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey: process.env.JWT_SECRET,
