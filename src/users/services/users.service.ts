@@ -51,4 +51,12 @@ export class UsersService {
   list() {
     return this.repo.find();
   }
+
+  async findOneByEmail(email: string) {
+    return this.repo.findOne({
+      where: {
+        email: email,
+      },
+    });
+  }
 }
