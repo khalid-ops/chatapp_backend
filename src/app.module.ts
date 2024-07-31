@@ -7,6 +7,8 @@ import { TypeOrmConfigService } from './configs/typeorm.config';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { ChatsModule } from './chats/chats.module';
+import { ChatsModule } from './chats/chats.module';
 
 @Module({
   imports: [
@@ -21,6 +23,7 @@ import { AuthModule } from './auth/auth.module';
     }),
     UsersModule,
     AuthModule,
+    ChatsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
