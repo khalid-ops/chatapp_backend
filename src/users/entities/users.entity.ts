@@ -29,6 +29,7 @@ export class User {
 
   @Column({
     nullable: true,
+    unique: true,
   })
   email: string;
 
@@ -48,6 +49,12 @@ export class User {
     default: false,
   })
   loggedIn: boolean;
+
+  @Column({
+    nullable: true,
+    unique: true,
+  })
+  username: string;
 
   @CreateDateColumn()
   createdAt: Date;
