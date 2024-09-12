@@ -1,8 +1,12 @@
+import { ConversationParticipant } from '../../chats/entities/conversation-participants.entity';
+import { MessageReceipt } from '../../chats/entities/message-receipt.entity';
+import { Message } from '../../chats/entities/messages.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -55,6 +59,15 @@ export class User {
     unique: true,
   })
   username: string;
+
+  @OneToMany(() => ConversationParticipant, (participant) => participant.user)
+  conversations: ConversationParticipant[];
+
+  @OneToMany(() => Message, (message) => message.sender)
+  messages: Message[];
+
+  @OneToMany(() => MessageReceipt, (receipt) => receipt.recipient)
+  messageReceipts: MessageReceipt[];
 
   @CreateDateColumn()
   createdAt: Date;

@@ -3,9 +3,12 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ConversationParticipant } from './conversation-participants.entity';
+import { Message } from './messages.entity';
 
 @Entity({ name: 'conversation' })
 export class Conversation {
@@ -20,6 +23,20 @@ export class Conversation {
 
   @Column({ name: 'is_deleted', default: false })
   isDeleted: boolean;
+
+  @OneToMany(
+    () => ConversationParticipant,
+    (participant) => participant.conversation,
+    {
+      onDelete: 'SET NULL',
+    },
+  )
+  participants: ConversationParticipant[];
+
+  @OneToMany(() => Message, (messages) => messages.conversation, {
+    onDelete: 'SET NULL',
+  })
+  messages: Message[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
