@@ -10,6 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { UserContact } from './user-contact.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -68,6 +69,12 @@ export class User {
 
   @OneToMany(() => MessageReceipt, (receipt) => receipt.recipient)
   messageReceipts: MessageReceipt[];
+
+  @OneToMany(() => UserContact, (contact) => contact.user)
+  sentContacts: UserContact[];
+
+  @OneToMany(() => UserContact, (contact) => contact.contact)
+  receivedContacts: UserContact[];
 
   @CreateDateColumn()
   createdAt: Date;

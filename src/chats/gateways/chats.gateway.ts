@@ -4,12 +4,11 @@ import {
   WebSocketGateway,
 } from '@nestjs/websockets';
 
-@WebSocketGateway(80, { namespace: 'chats' })
+@WebSocketGateway({ cors: true })
 export class ChatsGateway {
-  constructor() {}
-
   @SubscribeMessage('message')
-  handleMessage(@MessageBody() data: string): string {
-    return data;
+  handleMessage(@MessageBody() payload: string): string {
+    console.log(payload);
+    return payload;
   }
 }
