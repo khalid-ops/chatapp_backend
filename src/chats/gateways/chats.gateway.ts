@@ -6,7 +6,7 @@ import {
 
 @WebSocketGateway({ cors: true })
 export class ChatsGateway {
-  @SubscribeMessage('message')
+  @SubscribeMessage('chat-message')
   handleMessage(@MessageBody() payload: string): string {
     console.log(payload);
     return payload;

@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { UsersService } from '../services/users.service';
 import { CreateUserDto } from '../dtos/create-user-dto';
-import { JwtAuthGuard } from 'src/auth/auth.guard';
+// import { JwtAuthGuard } from 'src/auth/auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -17,9 +17,19 @@ export class UsersController {
     return this.service.createGoogleUserLogin(dto);
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get()
   async getUsers() {
     return this.service.list();
+  }
+
+  @Post('/contact')
+  async createUserContact(@Body() dto: { userId: string; contactId: string }) {
+    return this.service.addUserContact(dto.userId, dto.contactId);
+  }
+
+  @Get('/contacts/:id')
+  async fetchUserContacts(@Param('id') id: string) {
+    return this.service.fetchUserContacts(id);
   }
 }

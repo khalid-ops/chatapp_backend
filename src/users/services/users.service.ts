@@ -1,13 +1,21 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { User } from '../entities/users.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from '../dtos/create-user-dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { loginUserDto } from '../dtos/user-login-dto';
+import { UserContactService } from './user-contact.service';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(User) private repo: Repository<User>) {}
+  constructor(
+    @InjectRepository(User) private repo: Repository<User>,
+    private userContactService: UserContactService,
+  ) {}
 
   async create(dto: CreateUserDto) {
     console.log('reached backend', dto);
@@ -58,5 +66,35 @@ export class UsersService {
         email: email,
       },
     });
+  }
+
+  async addUserContact(userId: string, contactId: string) {
+    const user = await this.repo.findOne({
+      where: {
+        id: userId,
+      },
+    });
+    const contact = await this.repo.findOne({
+      where: {
+        id: contactId,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('user not found');
+    }
+    if (!contact) {
+      throw new NotFoundException('contact not found');
+    }
+
+    return this.userContactService.create({
+      user: user,
+      contact: contact,
+    });
+  }
+
+  async fetchUserContacts(userId: string) {
+    const results = await this.userContactService.fetchUserContacts(userId);
+    return results.map((result) => result.contact);
   }
 }

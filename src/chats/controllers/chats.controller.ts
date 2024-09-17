@@ -3,5 +3,5 @@ import { ChatsService } from '../services/chats.service';
 
 @Controller('chats')
 export class ChatsController {
-  constructor(private readonly chatsService: ChatsService) {}
+  constructor(private readonly messagesService: ChatsService) {}
 }
