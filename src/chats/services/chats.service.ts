@@ -10,5 +10,7 @@ export class ChatsService {
     private dataSource: DataSource,
   ) {}
 
-  async saveOneToOneChat(payload: any) {}
+  async saveOneToOneChat(payload: any) {
+    console.log(payload);
+  }
 }
