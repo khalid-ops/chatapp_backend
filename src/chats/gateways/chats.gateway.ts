@@ -1,4 +1,5 @@
 import {
+  ConnectedSocket,
   // ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
@@ -26,7 +27,7 @@ export class ChatsGateway
   }
 
   handleConnection(client: Socket) {
-    console.log('client connected', client.id);
+    console.log('client connected', client.id, client.handshake.auth.userId);
   }
 
   handleDisconnect(client: Socket) {
@@ -41,15 +42,19 @@ export class ChatsGateway
       senderId: string;
       recieverId: string;
     },
+    @ConnectedSocket() client: Socket,
   ) {
     console.log(payload);
     const { message, senderId, recieverId } = payload;
+
     const saved = await this.chatsService.saveOneToOneChat({
       senderId,
       recieverId,
       message,
     });
-    this.server.to(`user_${recieverId}`).emit('chat-message', saved);
-    this.server.to(`user_${senderId}`).emit('chat-message', saved);
+
+    this.server
+      .to(client.handshake.auth.userId)
+      .emit('chat-message', saved.content);
   }
 }

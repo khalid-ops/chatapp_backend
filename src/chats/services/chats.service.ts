@@ -6,6 +6,7 @@ import { User } from 'src/users/entities/users.entity';
 import { UserContact } from 'src/users/entities/user-contact.entity';
 import { Conversation } from '../entities/conversation.entity';
 import { MessageReceipt } from '../entities/message-receipt.entity';
+import { ConversationParticipant } from '../entities/conversation-participants.entity';
 
 @Injectable()
 export class ChatsService {
@@ -41,27 +42,54 @@ export class ChatsService {
       );
     }
 
-    let conversation = await this.dataSource.manager.findOne(Conversation, {
-      where: [
+    let senderUser = await this.dataSource.manager.findOne(
+      ConversationParticipant,
+      {
+        where: { user: { id: senderId } },
+      },
+    );
+    let recieverUser = await this.dataSource.manager.findOne(
+      ConversationParticipant,
+      {
+        where: { user: { id: recieverId } },
+      },
+    );
+
+    if (!senderUser) {
+      senderUser = await this.dataSource.manager.save(ConversationParticipant, {
+        user: { id: senderId } as User,
+        joinedAt: new Date(),
+      });
+    }
+
+    if (!recieverUser) {
+      recieverUser = await this.dataSource.manager.save(
+        ConversationParticipant,
         {
-          participants: [
-            { user: { id: senderId } },
-            { user: { id: recieverId } },
-          ],
+          user: { id: recieverId } as User,
+          joinedAt: new Date(),
         },
-        {
-          participants: [
-            { user: { id: recieverId } },
-            { user: { id: senderId } },
-          ],
-        },
-      ],
+      );
+    }
+
+    const conversations = await this.dataSource.manager.find(Conversation, {
       relations: ['participants'],
     });
 
+    let conversation: Conversation;
+    for (let conversation of conversations) {
+      const participants = conversation.participants;
+      if (
+        participants.includes(senderUser) &&
+        participants.includes(recieverUser)
+      ) {
+        conversation = conversation;
+        break;
+      }
+    }
+
     if (!conversation) {
       conversation = this.dataSource.manager.create(Conversation, {
-        type: 'private',
         participants: [
           { user: { id: senderId } },
           { user: { id: recieverId } },
